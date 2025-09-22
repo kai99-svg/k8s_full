@@ -28,7 +28,7 @@ jobs:
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
       - name: Run kubectl to update the kubeconfig
-        run: aws eks udpate-kubeconfig --region us-east-1 --name my-eks-cluster
+        run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
       
       - name: Intall service account to add load-balancer controller
         run: kubectl apply -f serviceaacount.yaml 

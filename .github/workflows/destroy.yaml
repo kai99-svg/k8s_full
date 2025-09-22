@@ -18,8 +18,14 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         
+      - name: Terraform init
+        run: terraform init    
+        
       - name: Terraform apply
         run: terraform destroy -auto-approve
 
       - name: CD to dns module to destroy the hosted zone and certificate
-        run: terraform destroy -auto-approve
+        run: |
+          cd dns_cert
+          terraform init 
+          terraform destroy -auto-approve

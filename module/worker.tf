@@ -109,4 +109,9 @@ resource "aws_instance" "foo" {
               sudo mv kubectl /usr/local/bin/
               EOF
 
+  tags= {
+    Name = "mybastion"
+    value = "test"
+  }
+
 }

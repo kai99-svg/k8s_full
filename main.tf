@@ -14,6 +14,11 @@ terraform {
   }
 }
 
+# ⚠️ DO NOT hardcode credentials here in production
+provider "aws" {
+  region     = "us-east-1"
+}
+
 module "my_web" {
   source = "./module"
 # public subnet value list 

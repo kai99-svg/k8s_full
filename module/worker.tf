@@ -131,7 +131,7 @@ resource "aws_iam_role_policy_attachment" "bastion_attach_cluster_policy" {
 # 10. IAM Instance Profile
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2-instance-profile"
-  role = aws_iam_role.eks_worker_role.name  # <--- this is wrong, .arn is full ARN, you need .name
+  role = aws_iam_role.self_hosted.name  # <--- this is wrong, .arn is full ARN, you need .name
 }
 
 resource "aws_instance" "foo" {

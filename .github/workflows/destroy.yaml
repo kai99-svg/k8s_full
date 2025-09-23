@@ -21,7 +21,7 @@ jobs:
       - name: Terraform init
         run: terraform init    
         
-      - name: Terraform apply
+      - name: Terraform destroy
         run: terraform destroy -auto-approve
 
       - name: CD to dns module to destroy the hosted zone and certificate

@@ -1,39 +1,39 @@
-name: Run the terraform
+name: Run the Terraform
 
 on:
   workflow_dispatch:
 
-
 jobs:
-  terraform:
+  setup:
+    name: Check installed tools
     runs-on: self-hosted
-    permissions:
-      id-token: write  # required for OIDC
-      contents: read
-
+    steps:
+      - name: Check installed tools
+        run: |
+          kubectl version --client
+          helm version
+          terraform version
+          aws --version
+  install-controller:
+    name: Install AWS Load Balancer Controller
+    needs: setup
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
+      - name: Re-configure AWS & kubeconfig
         uses: aws-actions/configure-aws-credentials@v2
         with:
-         role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
-         aws-region: us-east-1
+          role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
+          aws-region: us-east-1
 
-      - name: Install kubectl and helm
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-      - name: Run kubectl to update the kubeconfig
+      - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
-      
-      - name: Intall service account to add load-balancer controller
-        run: kubectl apply -f serviceaacount.yaml 
-      
-      - name: install load-balancer controller
+
+      - name: Install service account
+        run: kubectl apply -f serviceaacount.yaml
+
+      - name: Install load balancer controller
         run: |
           helm repo add eks https://aws.github.io/eks-charts
           helm repo update
@@ -47,11 +47,42 @@ jobs:
             --set ingressClass=alb \
             --set subnets="{subnet-01feca4e5854cd716,subnet-08146b8dd8acf5626,subnet-0b395b7f6d40d031e,subnet-08d3aa9b2f9a85d28}"
 
-      - name: helm install repo 
+  deploy-grafana:
+    name: Deploy Grafana via Helm
+    needs: install-controller
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Re-configure AWS & kubeconfig
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
+
+      - name: Helm install Grafana
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm install grafana bitnami/grafana -f values.yaml
 
-      - name: Run ingress yaml
-        run: cd ingress && kubectl apply -f ingress.yaml
+  apply-ingress:
+    name: Apply Ingress Config
+    needs: deploy-grafana
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Re-configure AWS & kubeconfig
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
+
+      - name: Apply Ingress YAML
+        run: cd ingress && kubectl apply -f ingress.yaml

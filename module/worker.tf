@@ -107,6 +107,7 @@ resource "aws_instance" "foo" {
               sudo curl -LO "https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.4/2025-08-20/bin/linux/amd64/kubectl"
               sudo chmod +x kubectl
               sudo mv kubectl /usr/local/bin/
+              sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
               EOF
 
   tags= {

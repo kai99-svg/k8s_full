@@ -6,26 +6,29 @@ on:
 jobs:
   setup:
     name: Check installed tools
+    
     runs-on: self-hosted
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
+      - uses: actions/checkout@v3
       - name: Check installed tools
         run: |
           aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
           kubectl version
           helm version
           aws --version
+
   install-controller:
     name: Install AWS Load Balancer Controller
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Re-configure AWS & kubeconfig
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
-          aws-region: us-east-1
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
@@ -51,14 +54,11 @@ jobs:
     name: Deploy Grafana via Helm
     needs: install-controller
     runs-on: self-hosted
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Re-configure AWS & kubeconfig
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
-          aws-region: us-east-1
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
@@ -72,14 +72,11 @@ jobs:
     name: Apply Ingress Config
     needs: deploy-grafana
     runs-on: self-hosted
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Re-configure AWS & kubeconfig
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::279205476473:role/github-actions-deploy-role
-          aws-region: us-east-1
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster

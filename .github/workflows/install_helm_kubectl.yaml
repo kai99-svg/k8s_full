@@ -40,17 +40,6 @@ jobs:
         run: |
           helm repo add eks https://aws.github.io/eks-charts || true
           helm repo update
-<<<<<<< HEAD
-          helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-            -n kube-system \
-            --set clusterName=my-eks-cluster \
-            --set serviceAccount.create=false \
-            --set serviceAccount.name=aws-load-balancer-controller \
-            --set region=us-east-1 \
-            --set vpcId=vpc-0ed4ed98c03d68e2a \
-            --set ingressClass=alb \
-            --set subnets="{subnet-0334ac60e3ed5fcea,subnet-04606abd020eae59f,subnet-0a5b64bb7f215d79d,subnet-0f0fc4d877b9f10c6}"
-=======
 
           if helm list -n kube-system | grep -q aws-load-balancer-controller; then
             echo "🔄 Helm release already exists. Running upgrade..."
@@ -76,7 +65,6 @@ jobs:
               --set subnets="{subnet-01feca4e5854cd716,subnet-08146b8dd8acf5626,subnet-0b395b7f6d40d031e,subnet-08d3aa9b2f9a85d28}"
           fi
 
->>>>>>> 86140d2 (added)
 
   deploy-grafana:
     name: Deploy Grafana via Helm

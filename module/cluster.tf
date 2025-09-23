@@ -17,16 +17,4 @@ resource "aws_eks_cluster" "eks" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_attach]  # Ensure IAM role policy attached before cluster creation
 }
 
-
-resource "aws_eks_auth" "github_actions_role" {
-  cluster_name = "my-eks-cluster"
-  rolearn      = "arn:aws:iam::279205476473:role/github-actions-deploy-role"
-
-  # Kubernetes RBAC groups to assign to this role
-  username     = "github-actions-deploy"
-  groups       = [
-    "system:masters"  # grants cluster admin access
-  ]
-}
-
 # Data source to get current EKS cluster details (like endpoint, certificate)

@@ -73,6 +73,27 @@ resource "aws_iam_role_policy_attachment" "csi" {
 }
 # ------------------------------------------------------------------------------------------------------------#
 
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = <<EOF
+- rolearn: arn:aws:iam::279205476473:role/eks-node-role
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+    - system:bootstrappers
+    - system:nodes
+- rolearn: arn:aws:iam::279205476473:role/eks-node-role
+  username: admin
+  groups:
+    - system:masters
+EOF
+  }
+}
+
 resource "aws_eks_addon" "vpc_cni" {
   count = length(var.eks_addon)
   cluster_name             = aws_eks_cluster.eks.name

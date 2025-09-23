@@ -51,6 +51,11 @@ resource "aws_iam_role_policy_attachment" "eks_worker_attach_SSMManagedInstanceC
   role       = aws_iam_role.eks_worker_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  # Grants permissions for Systems Manager (SSM) to manage and connect to EC2 instances
+}
 # -----------------------------
 # IAM Instance Profile for Worker Nodes
 # -----------------------------
@@ -87,53 +92,12 @@ resource "aws_eks_node_group" "node" {
   depends_on = [aws_eks_cluster.eks]
 }
 
-resource "aws_iam_role" "self_hosted" {
-  name = "self-hosted-role"
 
-  # Trust policy allowing EC2 instances to assume this role
-  # This enables worker nodes (EC2 instances) to interact with AWS services on behalf of EKS
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"  # Only EC2 instances are allowed to assume this role
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-resource "aws_iam_role_policy_attachment" "eks_worker_attach" {
-  role       = aws_iam_role.eks_worker_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  # Provides permissions required by EKS worker nodes to communicate with the control plane
-}
-resource "aws_iam_role_policy_attachment" "eks_worker_attach" {
-  role       = aws_iam_role.eks_worker_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  # Provides permissions required by EKS worker nodes to communicate with the control plane
-}
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
-  role       = aws_iam_role.eks_worker_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  # Grants permissions for Systems Manager (SSM) to manage and connect to EC2 instances
-}
-
-resource "aws_iam_role_policy_attachment" "eks_worker_attach_CR_policy" {
-  role       = aws_iam_role.eks_worker_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  # Allows worker nodes to pull container images from Amazon ECR
-}
-resource "aws_iam_role_policy_attachment" "eks_worker_attach_SSMManagedInstanceCore_policy" {
-  role       = aws_iam_role.eks_worker_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
 # 10. IAM Instance Profile
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2-instance-profile"
-  role = aws_iam_role.self_hosted.name  # <--- this is wrong, .arn is full ARN, you need .name
+  role = aws_iam_role.eks_worker_role.name  # <--- this is wrong, .arn is full ARN, you need .name
 }
-
 resource "aws_instance" "foo" {
   ami           = "ami-0360c520857e3138f" # us-west-2
   instance_type = "c7i-flex.large"

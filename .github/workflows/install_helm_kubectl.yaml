@@ -50,7 +50,7 @@ jobs:
   deploy-grafana:
     name: Deploy Grafana via Helm
     needs: install-controller
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
 
@@ -71,7 +71,7 @@ jobs:
   apply-ingress:
     name: Apply Ingress Config
     needs: deploy-grafana
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
 

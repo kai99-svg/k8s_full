@@ -103,26 +103,30 @@ resource "aws_iam_role" "self_hosted" {
     }]
   })
 }
-resource "aws_iam_role_policy_attachment" "eks_worker_attach" {
+resource "aws_iam_role_policy_attachment" "bastion_attach_nodepolicy" {
   role       = aws_iam_role.eks_worker_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   # Provides permissions required by EKS worker nodes to communicate with the control plane
 }
 
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+resource "aws_iam_role_policy_attachment" "bastion_attach_policy" {
   role       = aws_iam_role.eks_worker_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   # Grants permissions for Systems Manager (SSM) to manage and connect to EC2 instances
 }
 
-resource "aws_iam_role_policy_attachment" "eks_worker_attach_CR_policy" {
+resource "aws_iam_role_policy_attachment" "bastion_attach_CR_policy" {
   role       = aws_iam_role.eks_worker_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   # Allows worker nodes to pull container images from Amazon ECR
 }
-resource "aws_iam_role_policy_attachment" "eks_worker_attach_SSMManagedInstanceCore_policy" {
+resource "aws_iam_role_policy_attachment" "bastion_attach_SSMManagedInstanceCore_policy" {
   role       = aws_iam_role.eks_worker_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+resource "aws_iam_role_policy_attachment" "bastion_attach_cluster_policy" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 # 10. IAM Instance Profile
 resource "aws_iam_instance_profile" "ec2_profile" {

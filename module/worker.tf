@@ -46,7 +46,10 @@ resource "aws_iam_role_policy_attachment" "eks_worker_attach_CNI_policy" {
 resource "aws_iam_role_policy_attachment" "eks_worker_attach_CSI_policy" {
   role       = aws_iam_role.eks_worker_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-  # Allows the Amazon VPC CNI plugin to manage networking for worker nodes 
+}
+resource "aws_iam_role_policy_attachment" "eks_worker_attach_SSMManagedInstanceCore_policy" {
+  role       = aws_iam_role.eks_worker_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 # -----------------------------
 # IAM Instance Profile for Worker Nodes

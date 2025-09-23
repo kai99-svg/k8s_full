@@ -2,6 +2,9 @@ name: Check install tool and run lb controller
 
 on:
   workflow_dispatch:
+  permissions:
+  id-token: write
+  contents: read
 
 jobs:
   setup:

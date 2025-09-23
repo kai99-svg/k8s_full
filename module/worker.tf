@@ -94,7 +94,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 }
 resource "aws_instance" "foo" {
   ami           = "ami-0360c520857e3138f" # us-west-2
-  instance_type = "t3.micro"
+  instance_type = "c7i-flex.large"
   vpc_security_group_ids = [aws_security_group.worker_sg.id]
 
    iam_instance_profile = aws_iam_instance_profile.ec2_profile.name # this is to give the ec2 attach with role

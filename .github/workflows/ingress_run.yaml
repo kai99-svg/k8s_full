@@ -1,4 +1,4 @@
-name: Run the terraform
+name: Ingress run terraform
 
 on:
   workflow_dispatch:

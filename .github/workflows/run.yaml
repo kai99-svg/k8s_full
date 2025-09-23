@@ -1,4 +1,4 @@
-name: Run the terraform
+name: create the hosted zone and certificate
 
 on:
   workflow_dispatch:

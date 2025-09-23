@@ -1,4 +1,4 @@
-name: Run the Terraform
+name: Check install tool and run lb controller
 
 on:
   workflow_dispatch:
@@ -10,9 +10,8 @@ jobs:
     steps:
       - name: Check installed tools
         run: |
-          kubectl version --client
+          kubectl version
           helm version
-          terraform version
           aws --version
   install-controller:
     name: Install AWS Load Balancer Controller

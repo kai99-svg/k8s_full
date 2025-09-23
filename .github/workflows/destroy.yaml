@@ -1,4 +1,4 @@
-name: Destroy the terraform
+name: Destroy the first terraform k8s
 
 on:
   workflow_dispatch:

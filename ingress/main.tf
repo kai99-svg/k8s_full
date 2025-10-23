@@ -29,7 +29,7 @@ resource "aws_route53_record" "app_dns" {
 
   alias {
     name                   = "k8s-myapp-12345678.us-east-1.elb.amazonaws.com"
-    zone_id                = "Z35SXDOTRQ7X7K" # Hosted zone ID for ALB (varies by region)
+    zone_id                = "Z10184013OJ7USCD7KJHE" # Hosted zone ID for ALB (varies by region)
     evaluate_target_health = true
   }
 }

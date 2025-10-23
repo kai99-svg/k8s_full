@@ -10,7 +10,7 @@ resource "aws_eks_cluster" "eks" {
     security_group_ids = [aws_security_group.eks_sg.id]
   }
   access_config {
-    authentication_mode = "CONFIG_MAP"
+    authentication_mode = "CONFIG_MAP" # this will automatically help us to create a configmap and allow the role as master
     bootstrap_cluster_creator_admin_permissions = true
   }
 

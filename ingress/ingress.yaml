@@ -14,10 +14,10 @@ spec:
     - host: abc1234567.dpdns.org
       http:
         paths:
-          - path: /login
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: my-grafana
+                name: grafana
                 port:
                   number: 80

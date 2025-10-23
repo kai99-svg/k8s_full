@@ -4,17 +4,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  destroy:
-    name: Check installed tools
-    
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v3
-      - name: Check installed tools
-        run: |
-          aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
-          helm uninstall grafana
-          kubectl delete ingress my-app
           
   terraform:
     runs-on: ubuntu-latest

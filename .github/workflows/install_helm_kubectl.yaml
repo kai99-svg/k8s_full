@@ -72,9 +72,10 @@ jobs:
 
       - name: Helm install Grafana
         run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm install grafana bitnami/grafana -f values.yaml
-
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+          helm install my-grafana grafana/grafana -f values.yaml
+          
   apply-ingress:
     name: Apply Ingress Config
     needs: deploy-grafana

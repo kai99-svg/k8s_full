@@ -33,7 +33,7 @@ jobs:
       - name: Install LB policy and controller , and service account for the pod
         run: |
           cd lb
-          terrafrom init
+          terraform init
           terraform apply --auto-approve
 
   deploy-grafana:

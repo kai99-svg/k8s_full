@@ -1,4 +1,4 @@
-name: create the hosted zone and certificate
+name: create the k8s and hostzone
 
 on:
   workflow_dispatch:

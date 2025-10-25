@@ -1,19 +1,14 @@
 ---
-- name: Install nano on EKS nodes via SSM
+- name: Check if nano has been installed
   hosts: all
   gather_facts: no
   become: yes
-  collections:
-    - amazon.aws
-
+  vars:
+    ansible_connection: amazon.aws.aws_ssm
+    ansible_user: ec2-user
+    
   tasks:
-    - name: Ensure nano is installed via SSM
-      amazon.aws.aws_ssm:
-        targets:
-          - Key: InstanceIds
-            Values:
-              - "{{ inventory_hostname }}"
-        document_name: AWS-RunShellScript
-        parameters:
-          commands:
-            - sudo yum install -y nano
+    - name: Ensure nano is installed
+      ansible.builtin.yum:
+        name: nano
+        state: present

@@ -30,3 +30,4 @@ jobs:
         export AWS_DEFAULT_REGION=us-east-1
         # Run playbook in same shell
         ./ansible-env/bin/ansible-playbook -i aws_ec2.yaml ansible_check.yaml
+

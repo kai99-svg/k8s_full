@@ -20,12 +20,7 @@ jobs:
   install-controller:
     name: Install AWS Load Balancer Controller
     needs: setup
-    runs-on: ubuntu-latest
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       
@@ -60,12 +55,8 @@ jobs:
   apply-ingress:
     name: Apply Ingress Config
     needs: deploy-grafana
-    runs-on: ubuntu-latest
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          
+    runs-on: self-hosted
+         
     steps:
       - uses: actions/checkout@v3
       

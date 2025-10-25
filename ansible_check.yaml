@@ -3,7 +3,10 @@
   hosts: all
   gather_facts: no
   become: yes
-
+  vars:
+    ansible_connection: amazon.aws.aws_ssm
+    ansible_user: ec2-user
+    
   tasks:
     - name: Ensure nano is installed
       ansible.builtin.yum:

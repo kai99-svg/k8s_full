@@ -6,9 +6,11 @@
     - name: Check if nano exists
       command: which nano
       register: nano_check
-      ignore_errors: true
+      ignore_errors: yes
 
     - name: Report nano status
       debug:
         msg: >
-          Nano is {{ 'installed' if nano_check.rc == 0 else 'not installed' }} on {{ inventory_hostname }}
+          Nano is {{
+          'installed' if (nano_check.stdout is defined and nano_check.stdout != '') else 'not installed'
+          }} on {{ inventory_hostname }}

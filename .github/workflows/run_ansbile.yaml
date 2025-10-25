@@ -1,0 +1,16 @@
+name: run ansible to check nano
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ansible_run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: run ansible playbook
+        run: ansible-playbook -i ansible-inventory.yaml ansible_check.yaml
+       

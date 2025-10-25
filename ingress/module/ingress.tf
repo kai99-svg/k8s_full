@@ -59,10 +59,10 @@ locals {
   alb_name = join("-", slice(split("-", kubernetes_ingress_v1.prod_ingress.status[0].load_balancer[0].ingress[0].hostname), 0, 4)) # Grab first 4 parts
 }
 
-#data "aws_lb" "my_alb" {
-#  name = local.alb_name  # Use the local value for ALB name
-#}
-# Create a Route 53 DNS A record pointing to the ALB
+data "aws_lb" "my_alb" {
+  name = local.alb_name  # Use the local value for ALB name
+}
+ Create a Route 53 DNS A record pointing to the ALB
 resource "aws_route53_record" "app_dns" {
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = "abc1234567.dpdns.org"

@@ -13,8 +13,12 @@ jobs:
 
       - name: uninstall the app
         run: |
-          helm uninstall my-grafana
-          helm repo remove grafana
+          if helm list -q | grep -q "^my-grafana$"; then
+            echo "Uninstalling my-grafana..."
+            helm uninstall my-grafana
+          else
+            echo "my-grafana not found, skipping uninstall"
+          fi
          
   destroy-infra:
     runs-on: self-hosted

@@ -46,7 +46,7 @@ resource "null_resource" "wait_for_ingress" {
   depends_on = [kubernetes_ingress_v1.prod_ingress]
 
   provisioner "local-exec" {
-    command = "sleep 30"  # Delay to allow Ingress to populate its status
+    command = "sleep 40"  # Delay to allow Ingress to populate its status
   }
 }
 

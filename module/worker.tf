@@ -124,9 +124,18 @@ resource "aws_iam_role_policy_attachment" "bastion_attach_SSMManagedInstanceCore
   role       = aws_iam_role.self_hosted.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
-resource "aws_iam_role_policy_attachment" "bastion_attach_cluster_policy" {
+
+resource "aws_iam_role_policy_attachment" "bastion_attach_ssm_policy" {
   role       = aws_iam_role.self_hosted.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
+resource "aws_iam_role_policy_attachment" "bastion_attach_dynamodb_policy" {
+  role       = aws_iam_role.self_hosted.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+resource "aws_iam_role_policy_attachment" "bastion_attach_fullaccess_policy" {
+  role       = aws_iam_role.self_hosted.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 # 10. IAM Instance Profile
 resource "aws_iam_instance_profile" "ec2_profile" {

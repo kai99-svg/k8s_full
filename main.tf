@@ -3,8 +3,11 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
+    
   }
+  
 # S3 bucket for the tfstate. this is to make sure the tfstate file generated and push to my bucket
+  
   backend "s3" {
     bucket         = "kaikai-bucket-2025"  # your bucket name
     key            = "aws/k8s_full/k8s_infra/terraform.tfstate"    # path inside bucket for the state file
@@ -18,7 +21,17 @@ terraform {
 provider "aws" {
   region     = "us-east-1"
 }
-
+# this is to create the dynamotable for the lock
+#resource "aws_dynamodb_table" "terraform_locks" {
+#  name         = "terraform-locks"
+#  billing_mode = "PAY_PER_REQUEST"
+#  hash_key     = "LockID"
+#
+#  attribute {
+#    name = "LockID"
+#    type = "S"
+#  }
+#}
 module "my_web" {
   source = "./module"
 # public subnet value list 

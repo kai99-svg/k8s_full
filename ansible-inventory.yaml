@@ -1,0 +1,7 @@
+plugin: aws-ec2
+regions: us-east-1
+filters:
+  tag:eks:nodegroup-name: mynode 
+keyed_groups:
+  - key: tags.eks:nodegroup-name
+    prefix: node

@@ -16,9 +16,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          pip install ansible boto3 botocore
-          ansible-galaxy collection install amazon.aws --force
+          python3 -m pip install --user --upgrade setuptools wheel
+          python3 -m pip install --user ansible boto3 botocore
+          python3 -m pip install --user ansible-galaxy collection install amazon.aws --force
 
       - name: Test dynamic inventory
         run: ansible-inventory -i ansible-inventory.yaml --list -v

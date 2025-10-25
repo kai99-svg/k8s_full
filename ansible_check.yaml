@@ -1,16 +1,16 @@
-- name: Test SSM module
+- name: Check if nano is installed
   hosts: all
-  gather_facts: false
   connection: amazon.aws.aws_ssm
+  gather_facts: false
   tasks:
-    - name: Run simple command via SSM
-      amazon.aws.aws_ssm_command:
-        targets:
-          - "{{ inventory_hostname }}"
-        document_name: "AWS-RunShellScript"
-        parameters:
-          commands:
-            - "echo hello"
-      register: test
-    - debug:
-        var: test
+    - name: Run which nano
+      command: which nano
+      register: nano_check
+      ignore_errors: yes
+
+    - name: Report nano status
+      debug:
+        msg: >
+          Nano is {{
+            'installed' if (nano_check.stdout_lines | default([]) | join('') | trim != '') else 'not installed'
+          }} on {{ inventory_hostname }}

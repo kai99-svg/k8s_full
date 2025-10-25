@@ -4,13 +4,18 @@
   gather_facts: false
   tasks:
     - name: Check if nano exists
-      command: which nano
+      amazon.aws.aws_ssm_command:
+        targets:
+          - "{{ inventory_hostname }}"
+        document_name: "AWS-RunShellScript"
+        parameters:
+          commands:
+            - "which nano || echo ''"
       register: nano_check
-      ignore_errors: yes
 
     - name: Report nano status
       debug:
         msg: >
           Nano is {{
-            'installed' if (nano_check.stdout | default('') != '') else 'not installed'
+            'installed' if (nano_check.CommandPlugins[0].Output | trim != '') else 'not installed'
           }} on {{ inventory_hostname }}

@@ -36,5 +36,5 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          source ~/ansible-venv/bin/activate
-          ansible-playbook -i aws_ec2.yaml ansible_check.yaml
+          export PATH=$PATH:/usr/local/bin
+          ~/ansible-venv/bin/ansible-playbook -i aws_ec2.yaml ansible_check.yaml

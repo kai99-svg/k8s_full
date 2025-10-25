@@ -10,3 +10,4 @@ keyed_groups:
     prefix: node
 compose:
   ansible_connection: amazon.aws.aws_ssm
+  ansible_user: ec2-user

@@ -1,12 +1,11 @@
 ---
 - name: Check if nano has been installed
   hosts: all
-  connection: amazon.aws.aws_ssm
+  gather_facts: no
   become: yes
-  gather_facts: false
 
   tasks:
     - name: Ensure nano is installed
-      yum:
+      ansible.builtin.yum:
         name: nano
         state: present

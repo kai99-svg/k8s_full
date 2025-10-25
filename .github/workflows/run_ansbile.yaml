@@ -28,5 +28,4 @@ jobs:
 
     - name: Run Ansible Playbook
       run: |
-        source ansible-env/bin/activate
-        ansible-playbook -i aws_ec2.yaml ansible_check.yaml
+        ./ansible-env/bin/ansible-playbook -i aws_ec2.yaml ansible_check.yaml

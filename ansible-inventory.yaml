@@ -7,3 +7,5 @@ hostnames:
 keyed_groups:
   - key: tags.eks:nodegroup-name
     prefix: node
+compose:
+  ansible_connection: amazon.aws.aws_ssm

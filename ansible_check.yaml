@@ -1,7 +1,9 @@
 ---
 - name: Check if nano has been installed
   hosts: node_mynode
+  connection: amazon.aws.aws_ssm
   become: yes
+  
   tasks:
     - name: Check if nano installation
       apt:

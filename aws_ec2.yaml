@@ -1,13 +1,13 @@
 plugin: amazon.aws.aws_ec2
 regions:
-  - us-east-1
-filters:
-  "tag:eks:nodegroup-name": my_node
-hostnames:
-  - private-ip-address
+  - us-east-1       # your EKS region
 keyed_groups:
-  - key: tags.eks:nodegroup-name
-    prefix: node
+  - key: tags.kubernetes.io/cluster/my-eks-cluster 
+    prefix: eks_node
+filters:
+  instance-state-name: running
+  tag:eks:nodegroup-name: my_node 
 compose:
-  ansible_connection: amazon.aws.aws_ssm
-  ansible_user: ec2-user
+  ansible_host: private_ip_address
+  ansible_user: ec2-user  # or ubuntu if using Ubuntu nodes
+  ansible_ssh_common_args: '-o ProxyJump=ubuntu@10.0.100.21'

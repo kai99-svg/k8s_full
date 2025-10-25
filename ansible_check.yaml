@@ -12,5 +12,5 @@
       debug:
         msg: >
           Nano is {{
-            'installed' if (nano_check.stdout | default('') != '') else 'not installed'
+            'installed' if (nano_check.CommandPlugins[0].Output | default('') | trim | length > 0) else 'not installed'
           }} on {{ inventory_hostname }}

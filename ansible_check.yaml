@@ -3,12 +3,15 @@
   hosts: all
   gather_facts: no
   become: yes
-  vars:
-    ansible_connection: amazon.aws.aws_ssm
-    ansible_user: ec2-user
-    
+
   tasks:
-    - name: Ensure nano is installed
-      ansible.builtin.yum:
-        name: nano
-        state: present
+    - name: Ensure nano is installed via SSM
+      amazon.aws.ssm_command:
+        document_name: AWS-RunShellScript
+        targets:
+          - Key: InstanceIds
+            Values:
+              - "{{ inventory_hostname }}"
+        parameters:
+          commands:
+            - sudo yum install -y nano

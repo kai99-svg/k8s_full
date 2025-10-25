@@ -1,3 +1,4 @@
+---
 name: Check if nano has been installed
 hosts: node_mynode
 become: yes

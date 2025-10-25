@@ -7,6 +7,6 @@
 
   tasks:
     - name: Ensure nano is installed
-      ansible.builtin.yum:
+      yum:
         name: nano
         state: present

@@ -1,16 +1,16 @@
-- name: Check if nano is installed on EKS nodes
+- name: Test SSM module
   hosts: all
-  connection: amazon.aws.aws_ssm
   gather_facts: false
+  connection: amazon.aws.aws_ssm
   tasks:
-    - name: Check if nano exists
-      command: which nano
-      register: nano_check
-      ignore_errors: yes
-
-    - name: Report nano status
-      debug:
-        msg: >
-          Nano is {{
-            'installed' if (nano_check.CommandPlugins[0].Output | default('') | trim | length > 0) else 'not installed'
-          }} on {{ inventory_hostname }}
+    - name: Run simple command via SSM
+      amazon.aws.aws_ssm_command:
+        targets:
+          - "{{ inventory_hostname }}"
+        document_name: "AWS-RunShellScript"
+        parameters:
+          commands:
+            - "echo hello"
+      register: test
+    - debug:
+        var: test

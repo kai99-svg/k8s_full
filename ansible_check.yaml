@@ -1,9 +1,9 @@
 ---
-name: Check if nano has been installed
-hosts: node_mynode
-become: yes
-tasks:
-  - name: Check if nano installation
-    apt:
-      name: nano
-      state: present
+- name: Check if nano has been installed
+  hosts: node_mynode
+  become: yes
+  tasks:
+    - name: Check if nano installation
+      apt:
+        name: nano
+        state: present

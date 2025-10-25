@@ -1,26 +1,30 @@
 terraform {
   required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "~> 4.0"  # Ensure you're using AWS provider v4.x or later
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 1.3"   # Helm v1.x compatible with Terraform 1.13
     }
-     kubernetes = {
+    kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.8.0" # v2.19 works with Terraform 1.13
+      version = "~> 2.19"  # v2.19 works with Terraform 1.13
     }
-    
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.0.0"
+    }
   }
-# S3 bucket for the tfstate. this is to make sure the tfstate file generated and push to my bucket
+
+  # S3 bucket for the tfstate. This is to make sure the tfstate file is generated and pushed to your bucket
   backend "s3" {
     bucket         = "kaikai-bucket-2025"  # your bucket name
-    key            = "aws/k8s_full/dns_add_ingress/terraform.tfstate"    # path inside bucket for the state file
+    key            = "aws/k8s_full/create_lb_controller/terraform.tfstate"  # path inside the bucket for the state file
     region         = "us-east-1"
-    dynamodb_table = "your-lock-table"              # your DynamoDB table for locking
+    dynamodb_table = "your-lock-table"  # your DynamoDB table for locking
     encrypt        = true
   }
 }
 
-# ⚠️ DO NOT hardcode credentials here in production
+# Step 1: Use remote state to access outputs from EKS setup
 data "terraform_remote_state" "eks" {
   backend = "s3"
   config = {
@@ -32,7 +36,7 @@ data "terraform_remote_state" "eks" {
 
 # Step 2: Use outputs from the EKS remote state
 data "aws_eks_cluster" "eks" {
-  name = data.terraform_remote_state.eks.outputs.cluster_name
+  name = data.terraform_remote_state.eks.outputs.cluster_name # cluster name from main output
 }
 
 data "aws_eks_cluster_auth" "eks" {
@@ -45,10 +49,13 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
 }
+
+# AWS provider configuration
 provider "aws" {
-  region     = "us-east-1"
+  region = "us-east-1"
 }
 
-module "ingress" {
+# Include your custom module
+module "my_web" {
   source = "./module"
 }

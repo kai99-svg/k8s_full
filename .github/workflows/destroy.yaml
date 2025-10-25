@@ -1,12 +1,24 @@
-name: Destroy the first terraform k8s
+name: Destroy the entire infra
 
 on:
   workflow_dispatch:
 
 jobs:
-          
-  terraform:
+
+  helm-uninstall:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: uninstall the app
+        run: |
+          helm uninstall grafana
+          helm repo remove grafana
+         
+  destroy-infra:
     runs-on: ubuntu-latest
+    needs: helm-uninstall
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -18,14 +30,23 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         
-      - name: Terraform init
-        run: terraform init    
-        
-      - name: Terraform destroy
-        run: terraform destroy -auto-approve
+      - name: CD to ingress destroy 
+        run: |
+          cd ingress
+          terraform init 
+          terraform destroy -auto-approve
 
-      - name: CD to dns module to destroy the hosted zone and certificate
+      - name: CD to lb to destroy 
+        run: |
+          cd ingress
+          terraform init 
+          terraform destroy -auto-approve
+
+      - name: CD to dns cert destroy
         run: |
           cd dns_cert
           terraform init 
           terraform destroy -auto-approve
+      
+      - name: destroy the k8s infra
+        run: terraform init && terraform destroy -auto-approve

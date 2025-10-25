@@ -20,45 +20,26 @@ jobs:
   install-controller:
     name: Install AWS Load Balancer Controller
     needs: setup
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+
     steps:
       - uses: actions/checkout@v3
+      
+      - name: terraform setup
+        uses: hashicorp/setup-terraform@v3
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
 
-      - name: Install service account
-        run: kubectl apply -f serviceaacount.yaml
-
-      - name: Install or Upgrade AWS Load Balancer Controller
+      - name: Install LB policy and controller , and service account for the pod
         run: |
-          helm repo add eks https://aws.github.io/eks-charts || true
-          helm repo update
-
-          if helm list -n kube-system | grep -q aws-load-balancer-controller; then
-            echo "🔄 Helm release already exists. Running upgrade..."
-            helm upgrade aws-load-balancer-controller eks/aws-load-balancer-controller \
-              -n kube-system \
-              --set clusterName=my-eks-cluster \
-              --set serviceAccount.create=false \
-              --set serviceAccount.name=aws-load-balancer-controller \
-              --set region=us-east-1 \
-              --set vpcId=vpc-0ce4e958d353f9c60 \
-              --set ingressClass=alb \
-              --set subnets="{subnet-078709d5ee8f63866,subnet-07d207d284dd76ffc,subnet-0a02659f3ef17a912,subnet-00d1c67cb398e5815}"
-          else
-            echo "🚀 Installing AWS Load Balancer Controller..."
-            helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-              -n kube-system \
-              --set clusterName=my-eks-cluster \
-              --set serviceAccount.create=false \
-              --set serviceAccount.name=aws-load-balancer-controller \
-              --set region=us-east-1 \
-              --set vpcId=vpc-0ce4e958d353f9c60 \
-              --set ingressClass=alb \
-              --set subnets="{subnet-078709d5ee8f63866,subnet-07d207d284dd76ffc,subnet-0a02659f3ef17a912,subnet-00d1c67cb398e5815}"
-          fi
-
+          cd lb
+          terrafrom init
+          terraform apply --auto-approve
 
   deploy-grafana:
     name: Deploy Grafana via Helm
@@ -79,12 +60,22 @@ jobs:
   apply-ingress:
     name: Apply Ingress Config
     needs: deploy-grafana
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          
     steps:
       - uses: actions/checkout@v3
+      
+      - uses: hashicorp/setup-terraform@v3
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
 
-      - name: Apply Ingress YAML
-        run: cd ingress && kubectl apply -f ingress.yaml
+      - name: Deploy ingress and apply the ingress address to LB with adding the hostzone lb id
+        run: |
+          cd ingress
+          terraform init
+          terraform apply --auto-approve

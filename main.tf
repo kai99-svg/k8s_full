@@ -45,4 +45,45 @@ module "my_web" {
   ]
 # eks addon value list 
   eks_addon = ["vpc-cni","coredns","kube-proxy","aws-ebs-csi-driver"]
+
+  
+}
+########################################
+# OUTPUTS
+########################################
+
+output "cluster_endpoint" {
+  value = module.my_web.eks_cluster_endpoint
+}
+
+output "cluster_ca_certificate" {
+  value = module.my_web.eks_cluster_ca_certificate
+}
+
+output "cluster_name" {
+  value = module.my_web.eks_cluster_name
+}
+
+output "cluster_ca" {
+  value = module.my_web.eks_cluster_ca_certificate
+}
+
+output "vpc_id" {
+  value = module.my_web.vpc_id
+}
+
+output "public_subnets" {
+  value = module.my_web.public_subnets
+}
+
+output "private_subnets" {
+  value = module.my_web.private_subnets
+}
+
+output "oidc_role_name" {
+  value = module.my_web.oidc_role_name
+}
+
+output "oidc_role_arn" {
+  value = module.my_web.oidc_role_arn
 }

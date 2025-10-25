@@ -1,16 +1,31 @@
 - name: Check if nano is installed on EKS nodes
   hosts: all
-  connection: amazon.aws.aws_ssm
   gather_facts: false
+  connection: local  # Use local because SSM runs via API
   tasks:
-    - name: Check if nano exists
-      shell: "which nano || echo ''"
+    - name: Run SSM command to check for nano
+      amazon.aws.aws_ssm_command:
+        targets:
+          - "{{ inventory_hostname }}"
+        document_name: "AWS-RunShellScript"
+        parameters:
+          commands:
+            - "which nano || echo ''"
       register: nano_check
-      ignore_errors: yes
 
     - name: Report nano status
       debug:
         msg: >
           Nano is {{
-            'installed' if (nano_check.stdout | trim != '') else 'not installed'
+            'installed' if (nano_check.CommandPlugins[0].Output | trim != '') else 'not installed'
           }} on {{ inventory_hostname }}
+
+    - name: Install nano if missing
+      amazon.aws.aws_ssm_command:
+        targets:
+          - "{{ inventory_hostname }}"
+        document_name: "AWS-RunShellScript"
+        parameters:
+          commands:
+            - "sudo yum install -y nano || sudo apt-get update && sudo apt-get install -y nano"
+      when: nano_check.CommandPlugins[0].Output | trim == ''

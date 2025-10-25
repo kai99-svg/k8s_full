@@ -9,8 +9,9 @@
       ignore_errors: yes
 
     - name: Report nano status
-      debug:
+    - debug:
         msg: >
           Nano is {{
-          'installed' if (nano_check.stdout is defined and nano_check.stdout != '') else 'not installed'
+          'installed' if (nano_check.stdout | default('') != '') else 'not installed'
           }} on {{ inventory_hostname }}
+

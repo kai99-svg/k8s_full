@@ -2,7 +2,7 @@ plugin: amazon.aws.aws_ec2
 regions:
   - us-east-1
 filters:
-  "tag:eks:nodegroup-name": "my_node"
+  tag:eks:nodegroup-name: my_node
 hostnames:
   - private-ip-address
 keyed_groups:

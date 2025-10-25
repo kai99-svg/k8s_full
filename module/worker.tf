@@ -162,7 +162,7 @@ resource "aws_instance" "foo" {
               sudo chmod +x kubectl
               sudo mv kubectl /usr/local/bin/
               sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-              sudo apt install -y ansible
+              sudo apt install -y ansible python3-boto3 python3-botocore
               EOF
 
   tags= {

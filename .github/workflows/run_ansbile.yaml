@@ -4,12 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  check:
     runs-on: self-hosted
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: us-east-1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -22,4 +18,4 @@ jobs:
         run: ansible-inventory -i ansible-inventory.yaml --list -v
 
       - name: Run Ansible playbook
-        run: ansible-playbook -i ansible-inventory.yaml ansible_check.yaml
+        run: ansible-playbook -i aws_ec2.yaml ansible_check.yaml

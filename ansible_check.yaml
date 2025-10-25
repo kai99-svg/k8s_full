@@ -4,7 +4,7 @@
   gather_facts: false
   tasks:
     - name: Check if nano exists
-      command: which nano
+      shell: "which nano || echo ''"
       register: nano_check
       ignore_errors: yes
 
@@ -12,7 +12,5 @@
       debug:
         msg: >
           Nano is {{
-            'installed' if (nano_check.stdout | default('') != '') else 'not installed'
+            'installed' if (nano_check.stdout | trim != '') else 'not installed'
           }} on {{ inventory_hostname }}
-
-

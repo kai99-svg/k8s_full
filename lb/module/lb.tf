@@ -284,18 +284,21 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
 
   values = [
-    # Pass values as YAML directly, dynamically populate the subnets
-    <<EOF
-    clusterName: ${data.aws_eks_cluster.eks.name}
-    region: ${data.aws_region.current.id}
-    vpcId: ${data.terraform_remote_state.eks.outputs.vpc_id}
-    subnets:
-      ${join("\n      - ", concat(data.terraform_remote_state.eks.outputs.public_subnets, data.terraform_remote_state.eks.outputs.private_subnets))}
-    serviceAccount:
-      create: false
-      name: ${kubernetes_service_account.lb_controller.metadata[0].name}
-    EOF
-  ]
+  yamlencode({
+    clusterName = data.aws_eks_cluster.eks.name
+    region      = data.aws_region.current.id
+    vpcId       = data.terraform_remote_state.eks.outputs.vpc_id
+    subnets     = concat(
+      data.terraform_remote_state.eks.outputs.public_subnets,
+      data.terraform_remote_state.eks.outputs.private_subnets
+    )
+    serviceAccount = {
+      create = false
+      name   = kubernetes_service_account.lb_controller.metadata[0].name
+    }
+  })
+]
+
 }
 
 

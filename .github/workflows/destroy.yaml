@@ -38,6 +38,7 @@ jobs:
         run: |
           cd ingress
           terraform init -reconfigure
+          terraform state rm module.ingress.data.aws_lb.my_alb
           terraform destroy -auto-approve
 
       - name: CD to lb to destroy 

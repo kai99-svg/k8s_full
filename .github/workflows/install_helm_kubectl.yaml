@@ -53,6 +53,9 @@ jobs:
 
       - name: Helm install Grafana
         run: |
+          if helm repo list | grep -q grafana; then
+          echo "Grafana repo already exists, skipping add"
+          else
           helm repo add grafana https://grafana.github.io/helm-charts
           helm repo update
           helm install my-grafana grafana/grafana -f values.yaml

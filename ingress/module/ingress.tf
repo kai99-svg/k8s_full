@@ -31,7 +31,7 @@ resource "kubernetes_ingress_v1" "prod_ingress" {
           path_type = "Prefix"
           backend {
             service {
-              name = "grafana"  # Grafana service name
+              name = "my-grafana"  # Grafana service name
               port {
                 number = 80  # Service port
               }

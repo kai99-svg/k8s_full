@@ -1,14 +1,13 @@
----
-- name: Check if nano has been installed
+- name: Check if nano is installed on EKS nodes
   hosts: all
-  gather_facts: no
-  become: yes
-  vars:
-    ansible_connection: amazon.aws.aws_ssm
-    ansible_user: ec2-user
-    
+  gather_facts: false
   tasks:
-    - name: Ensure nano is installed
-      ansible.builtin.yum:
-        name: nano
-        state: present
+    - name: Check if nano exists
+      command: which nano
+      register: nano_check
+      ignore_errors: true
+
+    - name: Report nano status
+      debug:
+        msg: >
+          Nano is {{ 'installed' if nano_check.rc == 0 else 'not installed' }} on {{ inventory_hostname }}

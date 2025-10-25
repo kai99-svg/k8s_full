@@ -3,9 +3,10 @@
   hosts: all
   connection: amazon.aws.aws_ssm
   become: yes
-  
+  gather_facts: false
+
   tasks:
-    - name: Check if nano installation
-      apt:
+    - name: Ensure nano is installed
+      ansible.builtin.yum:
         name: nano
         state: present

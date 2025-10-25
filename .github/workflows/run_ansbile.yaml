@@ -11,13 +11,16 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Install Ansible and AWS collection
+    - name: Setup Python & Ansible with collections
       run: |
         python3 -m venv ansible-env
         source ansible-env/bin/activate
         python3 -m pip install --upgrade pip
         pip install ansible boto3
         ansible-galaxy collection install amazon.aws
+        # verify
+        ansible --version
+        ansible-galaxy collection list | grep amazon.aws
 
     - name: Configure AWS credentials
       run: |
@@ -25,7 +28,5 @@ jobs:
         export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
         export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
         export AWS_DEFAULT_REGION=us-east-1
-
-    - name: Run Ansible Playbook
-      run: |
+        # Run playbook in same shell
         ./ansible-env/bin/ansible-playbook -i aws_ec2.yaml ansible_check.yaml

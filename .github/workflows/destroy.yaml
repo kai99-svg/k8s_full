@@ -37,6 +37,7 @@ jobs:
       - name: CD to ingress destroy 
         run: |
           cd ingress
+          terraform refresh
           terraform init 
           terraform destroy -auto-approve
 

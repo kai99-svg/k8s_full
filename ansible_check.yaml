@@ -1,6 +1,6 @@
 ---
 - name: Check if nano has been installed
-  hosts: node_mynode
+  hosts: node_my_node
   connection: amazon.aws.aws_ssm
   become: yes
   

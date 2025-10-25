@@ -1,5 +1,5 @@
 ---
-- name: Check if nano has been installed
+- name: Install nano on EKS nodes via SSM
   hosts: all
   gather_facts: no
   become: yes
@@ -8,12 +8,12 @@
 
   tasks:
     - name: Ensure nano is installed via SSM
-      aws_ssm:
-        document_name: AWS-RunShellScript
+      amazon.aws.aws_ssm:
         targets:
           - Key: InstanceIds
             Values:
               - "{{ inventory_hostname }}"
+        document_name: AWS-RunShellScript
         parameters:
           commands:
             - sudo yum install -y nano

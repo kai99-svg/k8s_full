@@ -3,9 +3,14 @@
   connection: amazon.aws.aws_ssm
   gather_facts: false
   tasks:
+    - name: Check if nano exists
+      command: which nano
+      register: nano_check
+      ignore_errors: yes
+
     - name: Report nano status
       debug:
         msg: >
           Nano is {{
-            'installed' if (nano_check.stdout | trim != '') else 'not installed'
+            'installed' if (nano_check.stdout | default('') != '') else 'not installed'
           }} on {{ inventory_hostname }}

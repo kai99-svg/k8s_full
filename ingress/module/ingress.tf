@@ -62,7 +62,7 @@ locals {
 data "aws_lb" "my_alb" {
   name = local.alb_name  # Use the local value for ALB name
 }
- Create a Route 53 DNS A record pointing to the ALB
+#Create a Route 53 DNS A record pointing to the ALB
 resource "aws_route53_record" "app_dns" {
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = "abc1234567.dpdns.org"

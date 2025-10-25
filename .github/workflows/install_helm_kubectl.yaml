@@ -27,12 +27,6 @@ jobs:
       - name: terraform setup
         uses: hashicorp/setup-terraform@v3
         
-      - name: Clean Terraform cache
-        run: |
-          rm -rf .terraform .terraform.lock.hcl || true
-          rm -rf ~/.terraform.d || true
-          sudo find /tmp -maxdepth 1 -user "$USER" -type d -exec rm -rf {} + || true
-
       - name: install npm node.js
         run: |
           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -

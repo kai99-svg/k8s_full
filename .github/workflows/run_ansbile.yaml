@@ -1,3 +1,8 @@
+name: Check Nano on EKS Nodes
+
+on:
+  workflow_dispatch:
+
 jobs:
   check-nano:
     runs-on: self-hosted  # your bastion runner

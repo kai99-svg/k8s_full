@@ -20,25 +20,25 @@ jobs:
   install-controller:
     name: Install AWS Load Balancer Controller
     needs: setup
-    runs-on: ubuntu-latest
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
       
       - name: terraform setup
         uses: hashicorp/setup-terraform@v3
-
+      - name: install npm node.js
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          node -v
+          npm -v
+          
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
-
       - name: Install LB policy and controller , and service account for the pod
         run: |
           cd lb
-          terrafrom init
+          terraform init
           terraform apply --auto-approve
 
   deploy-grafana:
@@ -53,24 +53,31 @@ jobs:
 
       - name: Helm install Grafana
         run: |
+          if helm repo list | grep -q grafana; then
+          echo "Grafana repo already exists, skipping add"
+          else
           helm repo add grafana https://grafana.github.io/helm-charts
           helm repo update
           helm install my-grafana grafana/grafana -f values.yaml
+          fi
           
   apply-ingress:
     name: Apply Ingress Config
     needs: deploy-grafana
-    runs-on: ubuntu-latest
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          
+    runs-on: self-hosted
+         
     steps:
       - uses: actions/checkout@v3
       
       - uses: hashicorp/setup-terraform@v3
-
+      
+      - name: install npm node.js
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          node -v
+          npm -v
+                
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
 

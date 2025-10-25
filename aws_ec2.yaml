@@ -9,5 +9,5 @@ keyed_groups:
   - key: tags.eks:nodegroup-name
     prefix: node
 compose:
-  ansible_connection: "'mazon.aws.aws_ssm'"
+  ansible_connection: "'amazon.aws.aws_ssm'"
   ansible_user: ec2-user

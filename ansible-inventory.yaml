@@ -2,7 +2,7 @@ plugin: amazon.aws.aws_ec2
 regions:
   - us-east-1
 filters:
-  "tag:eks:nodegroup-name": "mynode"
+  "tag:eks:nodegroup-name": "my_node"
 keyed_groups:
   - key: tags.eks:nodegroup-name
     prefix: node

@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: uninstall the app
+      - name: Uninstall my-grafana if exists
         run: |
           if helm list -q | grep -q "^my-grafana$"; then
             echo "Uninstalling my-grafana..."
@@ -19,7 +19,7 @@ jobs:
           else
             echo "my-grafana not found, skipping uninstall"
           fi
-         
+
   destroy-infra:
     runs-on: self-hosted
     needs: helm-uninstall

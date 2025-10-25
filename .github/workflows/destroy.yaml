@@ -13,7 +13,7 @@ jobs:
 
       - name: uninstall the app
         run: |
-          helm uninstall grafana
+          helm uninstall my-grafana
           helm repo remove grafana
          
   destroy-infra:

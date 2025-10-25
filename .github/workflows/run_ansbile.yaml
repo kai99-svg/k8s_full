@@ -6,16 +6,32 @@ on:
 jobs:
   check:
     runs-on: self-hosted
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
-          sudo apt install -y ansible python3-boto3 python3-botocore
+          sudo apt update -y
+          sudo apt install -y ansible python3-boto3 python3-botocore python3-venv
+
+          # Create and activate a virtual environment for Ansible
+          python3 -m venv ~/ansible-venv
+          source ~/ansible-venv/bin/activate
+
+          pip install --upgrade pip
+          pip install boto3 botocore ansible
+
+          # ✅ Install the amazon.aws Ansible collection
+          ansible-galaxy collection install amazon.aws
 
       - name: Test dynamic inventory
-        run: ansible-inventory -i aws_ec2.yaml --list -v
+        run: |
+          source ~/ansible-venv/bin/activate
+          ansible-inventory -i aws_ec2.yaml --list -v
 
       - name: Run Ansible playbook
-        run: ansible-playbook -i aws_ec2.yaml ansible_check.yaml
+        run: |
+          source ~/ansible-venv/bin/activate
+          ansible-playbook -i aws_ec2.yaml ansible_check.yaml

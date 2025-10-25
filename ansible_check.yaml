@@ -3,10 +3,12 @@
   hosts: all
   gather_facts: no
   become: yes
+  collections:
+    - amazon.aws
 
   tasks:
     - name: Ensure nano is installed via SSM
-      amazon.aws.ssm_command:
+      aws_ssm:
         document_name: AWS-RunShellScript
         targets:
           - Key: InstanceIds

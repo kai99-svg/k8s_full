@@ -1,12 +1,7 @@
-name: Check Nano on EKS Nodes via SSM
-
-on:
-  workflow_dispatch:
-
 - name: Check if nano is installed on EKS nodes
   hosts: all
   gather_facts: false
-  connection: local  # Use local because SSM runs via API
+  connection: local  # SSM runs via API
   tasks:
     - name: Run SSM command to check for nano
       amazon.aws.aws_ssm_command:

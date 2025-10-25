@@ -3,8 +3,6 @@ regions:
   - us-east-1
 filters:
   "tag:eks:nodegroup-name": "mynode"
-hostnames:
-  - private-ip-address
 keyed_groups:
   - key: tags.eks:nodegroup-name
     prefix: node

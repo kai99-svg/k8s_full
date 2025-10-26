@@ -34,10 +34,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        
       - name: CD to ingress destroy 
         run: |
           cd ingress
-          terraform init -reconfigure
+          terraform init
           terraform destroy -auto-approve
 
       - name: CD to lb to destroy 

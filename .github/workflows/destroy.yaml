@@ -21,7 +21,7 @@ jobs:
           fi
 
   destroy-infra:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: helm-uninstall
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

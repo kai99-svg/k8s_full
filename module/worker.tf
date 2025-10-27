@@ -171,7 +171,12 @@ resource "aws_instance" "foo" {
               sudo chmod +x kubectl
               sudo mv kubectl /usr/local/bin/
               sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-              sudo apt install -y ansible python3-boto3 python3-botocore
+              sudo echo "export EDITOR=nano" >> ~/.bashrc
+              sudo echo "export VISUAL=nano" >> ~.bashrc
+              sudo apt update -y
+              sudo apt install -y curl
+              sudo curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+              sudo apt install -y nodejs
               EOF
 
   tags= {

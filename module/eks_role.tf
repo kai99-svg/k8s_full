@@ -27,12 +27,13 @@ resource "aws_iam_role_policy_attachment" "eks_csi_attach" {
 # ------------------------------------------------------------------------------------------------------------#
 
 # Create an IAM OIDC Provider for the cluster to enable service account IAM roles
+# aws_iam_openid_connect_provider = sets up the trust relationship between EKS cluster pods and AWS IAM roles.
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   depends_on = [aws_eks_cluster.eks]  # Wait for cluster creation before creating OIDC provider
 
   url             = aws_eks_cluster.eks.identity[0].oidc[0].issuer  # OIDC issuer URL from the cluster
   client_id_list  = ["sts.amazonaws.com"]  # Allowed client ID for the provider# 
-  thumbprint_list = ["63462dda480d8b900e0a7dbfaf6238a62ba4fce0"]  # Thumbprint of the OIDC provider's certificate
+  thumbprint_list = ["63462dda480d8b900e0a7dbfaf6238a62ba4fce0"]  # Thumbprint of the OIDC provider's certificate,used to verify AWS is talking to the right server.
 }
 
 # Create an IAM Role that Kubernetes service accounts can assume using OIDC federation
@@ -55,7 +56,7 @@ resource "aws_iam_role" "oidc_role" {
                         "system:serviceaccount:kube-system:aws-node",
                         "system:serviceaccount:kube-system:ebs-csi-controller-sa",
                         "system:serviceaccount:kube-system:ebs-csi-node-sa",
-                        "system:serviceaccount:kube-system:aws-load-balancer-controller"
+                        "system:serviceaccount:kube-system:aws-load-balancer-controller" # assume lb using this service account
                     ]
         }
       }

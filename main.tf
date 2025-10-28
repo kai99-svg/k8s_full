@@ -21,8 +21,8 @@ terraform {
 provider "aws" {
   region     = "us-east-1"
 }
-# this is to create the dynamotable for the lock
-#resource "aws_dynamodb_table" "terraform_locks" {
+# This is to create the dynamotable for
+# resource "aws_dynamodb_table" "terraform_locks" {
 #  name         = "terraform-locks"
 #  billing_mode = "PAY_PER_REQUEST"
 #  hash_key     = "LockID"
@@ -32,6 +32,13 @@ provider "aws" {
 #    type = "S"
 #  }
 #}
+
+# This is to create ecr repo
+#resource "aws_ecr_repository" "myapp" {
+#  name = "myapp"
+#  image_tag_mutability = "MUTABLE"
+#}
+
 module "my_web" {
   source = "./module"
 # public subnet value list 
@@ -57,9 +64,7 @@ module "my_web" {
     }
   ]
 # eks addon value list 
-  eks_addon = ["vpc-cni","coredns","kube-proxy","aws-ebs-csi-driver"]
-
-  
+  eks_addon = ["vpc-cni","coredns","kube-proxy","aws-ebs-csi-driver"]  
 }
 ########################################
 # OUTPUTS
@@ -79,6 +84,7 @@ output "cluster_name" {
 
 output "cluster_ca" {
   value = module.my_web.eks_cluster_ca_certificate
+  sensitive = true
 }
 
 output "vpc_id" {

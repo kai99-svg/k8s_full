@@ -59,13 +59,6 @@ resource "aws_iam_instance_profile" "eks_node_profile" {
   role = aws_iam_role.eks_worker_role.name
   # EC2 instances assume this instance profile, which contains the IAM role above
 }
-resource "aws_launch_template" "eks_node_lt" {
-  name_prefix = "eks-node-lt-"
-
-  vpc_security_group_ids = [
-    aws_security_group.worker_sg.id
-  ]
-}
 # -----------------------------
 # Launch Template for EKS Worker Nodes
 # -----------------------------
@@ -82,10 +75,7 @@ resource "aws_eks_node_group" "node" {
   }
   subnet_ids = aws_subnet.private[*].id
   instance_types = ["c7i-flex.large"]
-    launch_template {
-    id      = aws_launch_template.eks_node_lt.id
-    version = "$Latest"
-  }
+
   update_config {
     max_unavailable = 1
   }

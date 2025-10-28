@@ -14,7 +14,7 @@ resource "aws_security_group" "worker_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
    ingress {
-    from_port   = 10250
+    from_port   = 10250 #trafic come from k8s api to node(accepts incoming from control plane
     to_port     = 10250
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]

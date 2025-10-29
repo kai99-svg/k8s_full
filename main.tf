@@ -34,10 +34,10 @@ provider "aws" {
 #}
 
 # This is to create ecr repo
-#resource "aws_ecr_repository" "myapp" {
-#  name = "myapp"
-#  image_tag_mutability = "MUTABLE"
-#}
+resource "aws_ecr_repository" "myapp" {
+  name = "myapp"
+  image_tag_mutability = "MUTABLE"
+}
 
 module "my_web" {
   source = "./module"
@@ -69,6 +69,9 @@ module "my_web" {
 ########################################
 # OUTPUTS
 ########################################
+output "aws_ecr"{
+  value = aws_ecr_repository.myapp.arn
+}
 
 output "cluster_endpoint" {
   value = module.my_web.eks_cluster_endpoint
@@ -76,6 +79,7 @@ output "cluster_endpoint" {
 
 output "cluster_ca_certificate" {
   value = module.my_web.eks_cluster_ca_certificate
+  sensitive = true
 }
 
 output "cluster_name" {

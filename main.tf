@@ -63,7 +63,7 @@ module "my_web" {
       availability_zone = "us-east-1d"
     }
   ]
-# eks addon value list 
+# eks addon value list 4
   eks_addon = ["vpc-cni","coredns","kube-proxy","aws-ebs-csi-driver"]  
 }
 ########################################

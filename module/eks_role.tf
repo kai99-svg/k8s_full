@@ -45,18 +45,20 @@ resource "aws_iam_role" "oidc_role" {
     Version = "2012-10-17",
     Statement = [{
       Effect = "Allow",
-      Principal = {
+      Principal = {     # who is allow to assume the role 
         Federated = aws_iam_openid_connect_provider.oidc_provider.arn
       },
       Action = "sts:AssumeRoleWithWebIdentity",
       Condition = {
         StringEquals = {
-          # The sub claim must match this service account
+          # The sub claim must match this service account, to allow service account assume the role
+          # "oidc.eks.us-east-1.amazonaws.com/id/<OIDC_ID>:sub": "system:serviceaccount:<NAMESPACE>:<SERVICEACCOUNT_NAME>" this is how service account link oidc
           "${replace(aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://", "")}:sub" : [
                         "system:serviceaccount:kube-system:aws-node",
                         "system:serviceaccount:kube-system:ebs-csi-controller-sa",
                         "system:serviceaccount:kube-system:ebs-csi-node-sa",
-                        "system:serviceaccount:kube-system:aws-load-balancer-controller" # assume lb using this service account
+                        "system:serviceaccount:kube-system:aws-load-balancer-controller", # to should match the service account we create name
+                        "system:serviceaccount:amazon-cloudwatch:fluent-bit-aws-for-fluent-bit" # assume lb using this service account
                     ]
         }
       }
@@ -71,6 +73,10 @@ resource "aws_iam_role_policy_attachment" "attach" {
 resource "aws_iam_role_policy_attachment" "csi" {
   role       = aws_iam_role.oidc_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"  # Allows CNI plugin to manage networking
+}
+resource "aws_iam_role_policy_attachment" "eks_cloudwatch" {
+  role       = aws_iam_role.oidc_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
 # ------------------------------------------------------------------------------------------------------------#
 

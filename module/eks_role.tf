@@ -45,7 +45,7 @@ resource "aws_iam_role" "oidc_role" {
     Version = "2012-10-17",
     Statement = [{
       Effect = "Allow",
-      Principal = {     # who is allow to assume the role 
+      Principal = {     # who is allow to assume the role, allow my eks OIDC
         Federated = aws_iam_openid_connect_provider.oidc_provider.arn
       },
       Action = "sts:AssumeRoleWithWebIdentity",
@@ -57,8 +57,8 @@ resource "aws_iam_role" "oidc_role" {
                         "system:serviceaccount:kube-system:aws-node",
                         "system:serviceaccount:kube-system:ebs-csi-controller-sa",
                         "system:serviceaccount:kube-system:ebs-csi-node-sa",
-                        "system:serviceaccount:kube-system:aws-load-balancer-controller", # to should match the service account we create name
-                        "system:serviceaccount:amazon-cloudwatch:fluent-bit-aws-for-fluent-bit" # assume lb using this service account
+                        "system:serviceaccount:kube-system:aws-load-balancer-controller", # to match the service account we create with name aws-load-balancer-controller
+                        "system:serviceaccount:amazon-cloudwatch:fluent-bit-aws-for-fluent-bit" # 
                     ]
         }
       }
